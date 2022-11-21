@@ -1,4 +1,4 @@
-import com.sun.xml.internal.ws.resources.StreamingMessages;
+package streampractise;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,7 +7,6 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class StreamPractise {
 
@@ -27,10 +26,11 @@ public class StreamPractise {
     }
 
     //Írj egy Stream kifejezést, hogy megkapd, melyik szám négyzete nagyobb mint 20 az alábbi listából:
-    public List<Integer> powNumberBiggerThanTwenty(List<Integer> numbers) {
+    public List<Double> powNumberBiggerThanTwenty(List<Integer> numbers) {
         return numbers.stream()
                 .map(x -> x * x)
                 .filter(x -> x > 20)
+                .map(Math::sqrt)
                 .collect(Collectors.toList());
     }
 
@@ -57,6 +57,7 @@ public class StreamPractise {
         StringBuilder upperCaseString = new StringBuilder();
         str.chars()
                 .filter(Character::isUpperCase)
+                .mapToObj(c -> (char) c)
                 .forEach(upperCaseString::append);
         return upperCaseString.toString();
     }
@@ -90,44 +91,6 @@ public class StreamPractise {
     Írj egy Stream kifejezést, hogy megtaláld azokat a rókákat, akiknek a színe zöld és fiatalabbak mint 5 év.
     Írj egy Stream kifejezést, hogy megtudd, milyen színű róka milyen gyakorisággal fordul elő!*/
 
-    public class Fox {
-        private String name;
-        private String color;
-        private int age;
-
-        public Fox() {
-        }
-
-        public Fox(String name, String color, int age) {
-            this.name = name;
-            this.color = color;
-            this.age = age;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getColor() {
-            return color;
-        }
-
-        public void setColor(String color) {
-            this.color = color;
-        }
-
-        public int getAge() {
-            return age;
-        }
-
-        public void setAge(int age) {
-            this.age = age;
-        }
-    }
 
     public List<Fox> foxesWithGreenColor(List<Fox> foxes) {
         return foxes.stream()
@@ -196,12 +159,10 @@ public class StreamPractise {
 
     Írasd ki a legnehezebb karakter nevét (ha a tömege ismeretlen, hagyja figyelmen kívül)
     Írja ki a férfi karakterek átlag magasságát
-    Írja ki a női karakterek átlag magasságát
-    Írasd ki a karakterek nem szerinti kormegoszlását (ahol a nem lehet "male", "female", "other")
-        Az életkor csoportok : "below 21", "between 21 and 40", "above 40" és "unknown"
-        Az eredmény legyen egy Map<String, Map<String, Integer>> */
+    Írja ki a női karakterek átlag magasságát */
 
-    public void theHeaviestCharacter(String fileName) {
+
+    public String theHeaviestCharacter(String fileName) {
 
         List<String[]> fileContent = readFile(fileName);
 
@@ -212,32 +173,71 @@ public class StreamPractise {
                 .max()
                 .orElse(Integer.MIN_VALUE);
 
-        String heaviestCharacter = fileContent.stream()
+        return fileContent.stream()
                 .filter(f -> f[2].matches("\\d+$"))
                 .filter(f -> Integer.parseInt(f[2]) == maxHeavy)
                 .map(f -> f[0])
                 .findFirst()
                 .orElse("kismalac");
-
-        System.out.println(heaviestCharacter);
     }
 
-    public void avgHeight(String fileName, String gender){
+    public Double avgHeight(String fileName, String gender) {
 
         List<String[]> fileContent = readFile(fileName);
 
-        double avgHeight =
-                fileContent.stream()
-                        .filter(f -> f[1].matches("\\d+$"))
-                        .filter(f -> f[7].equals(gender))
-                        .mapToInt(f -> Integer.parseInt(f[1]))
-                        .average()
-                        .orElse(0.0);
-
-        System.out.println(avgHeight);
+        return fileContent.stream()
+                .filter(f -> f[1].matches("\\d+$"))
+                .filter(f -> f[7].equals(gender))
+                .mapToInt(f -> Integer.parseInt(f[1]))
+                .average()
+                .orElse(0.0);
     }
 
-    private List<String[]> readFile(String fileName){
+   /* Írasd ki a karakterek nem szerinti kormegoszlását (ahol a nem lehet "male", "female", "other")
+    Az életkor csoportok : "below 21", "between 21 and 40", "above 40" és "unknown"
+    Az eredmény legyen egy Map<String, Map<String, Integer>> */
+
+
+    public Map<String, Map<String, Long>> ageDistribution(String fileName) {
+
+        List<String[]> fileContent = readFile(fileName);
+        Map<String, Map<String, Integer>> genderAndAgeDistribution;
+
+        List<SWCharacter> characters = fileContent.stream()
+                .map(SWCharacter::new)
+                .collect(Collectors.toList());
+
+        return characters.stream()
+                .collect(Collectors.groupingBy(
+                        c -> groupByAge(c.getBirthYear()),
+                        Collectors.groupingBy(c -> groupByGender(c.getGender()), Collectors.counting())
+                ));
+    }
+
+    private String groupByGender(String gender) {
+        if (gender.toLowerCase().equals("male")) {
+            return "male";
+        }
+        if (gender.toLowerCase().equals("female")) {
+            return "female";
+        }
+        return "other";
+    }
+
+    private String groupByAge(Integer birthYear) {
+        if (birthYear == null) {
+            return "unknown";
+        }
+        if (birthYear < 21) {
+            return "below 21";
+        }
+        if (birthYear >= 21 && birthYear <= 40) {
+            return "between 21 and 40";
+        }
+        return "above 40";
+    }
+
+    private List<String[]> readFile(String fileName) {
 
         List<String[]> fileContent;
         Path path = Paths.get(fileName);
@@ -247,15 +247,23 @@ public class StreamPractise {
         } catch (IOException e) {
             throw new IllegalStateException("A fájl beolvasása nem sikerült", e);
         }
-
         return fileContent;
     }
 
     public static void main(String[] args) {
         StreamPractise streamPractise = new StreamPractise();
-        streamPractise.theHeaviestCharacter("swcharacters.csv");
-        streamPractise.avgHeight("swcharacters.csv", "male");
-        streamPractise.avgHeight("swcharacters.csv", "female");
+        List<Integer> numbers = Arrays.asList(1, 3, -2, -4, -7, -3, -8, 12, 19, 6, 9, 10, 14);
+        List<Integer> numbers2 = Arrays.asList(3, 9, 2, 8, 6, 5);
+        System.out.println(streamPractise.evenNumbers(numbers));
+        System.out.println(streamPractise.positiveNumbersBringToSquare(numbers));
+        System.out.println(streamPractise.powNumberBiggerThanTwenty(numbers2));
+        System.out.println(streamPractise.oddNumbersAverage(numbers));
+        System.out.println(streamPractise.sumOddNumbers(numbers));
+        System.out.println(streamPractise.onlyUpperCaseChar("sdAbcaLasMsaAa"));
+        System.out.println(streamPractise.theHeaviestCharacter("swcharacters.csv"));
+        System.out.println(streamPractise.avgHeight("swcharacters.csv", "male"));
+        System.out.println(streamPractise.avgHeight("swcharacters.csv", "female"));
+        System.out.println(streamPractise.ageDistribution("swcharacters.csv"));
 
     }
 }
