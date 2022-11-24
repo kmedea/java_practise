@@ -3,6 +3,7 @@ package com.practice.video.games.services;
 import com.practice.video.categories.entities.models.Category;
 import com.practice.video.categories.services.CategoryService;
 import com.practice.video.exceptions.errorTypes.GameIsAlreadyExistException;
+import com.practice.video.exceptions.errorTypes.GameNotFoundException;
 import com.practice.video.games.entities.dtos.CreateGameDTO;
 import com.practice.video.games.entities.dtos.CreateGameResponseDTO;
 import com.practice.video.games.entities.dtos.GameDTO;
@@ -51,6 +52,12 @@ public class GameServiceImpl implements GameService {
         CreateGameResponseDTO createGameResponseDTO = new CreateGameResponseDTO();
         createGameResponseDTO.setGameId(game.getId());
         return createGameResponseDTO;
+    }
+
+    @Override
+    public GameDTO getGameById(Integer id) {
+       return convertGameToGameDTO(gameRepository.findById(id)
+                .orElseThrow(GameNotFoundException::new));
     }
 
     private GameDTO convertGameToGameDTO (Game game){

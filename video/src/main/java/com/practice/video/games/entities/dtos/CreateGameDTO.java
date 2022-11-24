@@ -1,11 +1,13 @@
 package com.practice.video.games.entities.dtos;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class CreateGameDTO {
     @NotBlank(message = "The name field is required")
+    @NotNull
     private String name;
-    @NotBlank(message = "The releaseYear field is required")
+    @NotNull(message = "The releaseYear field is required")
     private Integer releaseYear;
     @NotBlank(message = "The category field is required")
     private String category;
