@@ -1,5 +1,6 @@
 package com.practice.video.games.controllers;
 
+import com.practice.video.categories.entities.dtos.CategoryDTO;
 import com.practice.video.games.entities.dtos.CreateGameDTO;
 import com.practice.video.games.entities.dtos.CreateGameResponseDTO;
 import com.practice.video.games.entities.dtos.GameDTO;
@@ -20,19 +21,24 @@ public class GameController {
     }
 
     @GetMapping("api/games")
-    public ResponseEntity<GetGamesResponseDTO> getAllGames(){
+    public ResponseEntity<GetGamesResponseDTO> getAllGames() {
         return ResponseEntity.status(200).body(gameService.getAllGames());
     }
 
     @GetMapping("api/games/{id}")
-    public ResponseEntity<GameDTO> getGameById(@PathVariable (required = false) Integer id){
+    public ResponseEntity<GameDTO> getGameById(@PathVariable(required = false) Integer id) {
         return ResponseEntity.status(200).body(gameService.getGameById(id));
     }
 
     @PostMapping("api/games")
-    public ResponseEntity<CreateGameResponseDTO> createNewGame(@RequestBody @Valid CreateGameDTO createGameDTO){
+    public ResponseEntity<CreateGameResponseDTO> createNewGame(@RequestBody @Valid CreateGameDTO createGameDTO) {
         return ResponseEntity.status(201).body(gameService.createNewGame(createGameDTO));
     }
 
+    @PutMapping("api/games/{id}/category")
+    public ResponseEntity<GameDTO> changeCategory(@PathVariable Integer id,
+                                                  @RequestBody @Valid CategoryDTO category){
+        return ResponseEntity.status(201).body(gameService.changeCategoryById(id, category));
+    }
 
 }

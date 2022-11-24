@@ -1,5 +1,6 @@
 package com.practice.video.games.services;
 
+import com.practice.video.categories.entities.dtos.CategoryDTO;
 import com.practice.video.categories.entities.models.Category;
 import com.practice.video.categories.services.CategoryService;
 import com.practice.video.exceptions.errorTypes.GameIsAlreadyExistException;
@@ -58,6 +59,16 @@ public class GameServiceImpl implements GameService {
     public GameDTO getGameById(Integer id) {
        return convertGameToGameDTO(gameRepository.findById(id)
                 .orElseThrow(GameNotFoundException::new));
+    }
+
+    @Override
+    public GameDTO changeCategoryById(Integer id, CategoryDTO categoryDTO) {
+        Game game = gameRepository.findById(id).orElseThrow(GameNotFoundException::new);
+        Category category = categoryService.findCategoryByName(categoryDTO.getCategory());
+        game.setCategory(category == null ? categoryService.saveNewCategory(categoryDTO.getCategory()) : category);
+        gameRepository.save(game);
+        return convertGameToGameDTO(game);
+
     }
 
     private GameDTO convertGameToGameDTO (Game game){

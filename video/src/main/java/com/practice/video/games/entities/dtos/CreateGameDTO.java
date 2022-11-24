@@ -5,7 +5,6 @@ import javax.validation.constraints.NotNull;
 
 public class CreateGameDTO {
     @NotBlank(message = "The name field is required")
-    @NotNull
     private String name;
     @NotNull(message = "The releaseYear field is required")
     private Integer releaseYear;

@@ -1,5 +1,6 @@
 package com.practice.video.games.services;
 
+import com.practice.video.categories.entities.dtos.CategoryDTO;
 import com.practice.video.games.entities.dtos.CreateGameDTO;
 import com.practice.video.games.entities.dtos.CreateGameResponseDTO;
 import com.practice.video.games.entities.dtos.GameDTO;
@@ -11,4 +12,6 @@ public interface GameService {
     CreateGameResponseDTO createNewGame(CreateGameDTO createGameDTO);
 
     GameDTO getGameById(Integer id);
+
+    GameDTO changeCategoryById(Integer id, CategoryDTO category);
 }
