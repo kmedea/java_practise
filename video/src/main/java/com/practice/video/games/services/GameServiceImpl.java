@@ -13,8 +13,8 @@ import com.practice.video.games.entities.models.Game;
 import com.practice.video.games.repositories.GameRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,6 +69,14 @@ public class GameServiceImpl implements GameService {
         gameRepository.save(game);
         return convertGameToGameDTO(game);
 
+    }
+
+    @Override
+    public List<GameDTO> getGameByKeyword(String keyword) {
+       return getAllGames().getGames().stream()
+                .filter(game -> game.getName().toLowerCase().contains(keyword.toLowerCase()) ||
+                        game.getCategoryName().toLowerCase().contains(keyword.toLowerCase()))
+                .collect(Collectors.toList());
     }
 
     private GameDTO convertGameToGameDTO (Game game){

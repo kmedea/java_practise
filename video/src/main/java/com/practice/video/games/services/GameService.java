@@ -6,6 +6,8 @@ import com.practice.video.games.entities.dtos.CreateGameResponseDTO;
 import com.practice.video.games.entities.dtos.GameDTO;
 import com.practice.video.games.entities.dtos.GetGamesResponseDTO;
 
+import java.util.List;
+
 public interface GameService {
    GetGamesResponseDTO getAllGames();
 
@@ -14,4 +16,6 @@ public interface GameService {
     GameDTO getGameById(Integer id);
 
     GameDTO changeCategoryById(Integer id, CategoryDTO category);
+
+    List<GameDTO> getGameByKeyword(String keyword);
 }

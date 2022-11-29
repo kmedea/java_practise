@@ -21,8 +21,12 @@ public class GameController {
     }
 
     @GetMapping("api/games")
-    public ResponseEntity<GetGamesResponseDTO> getAllGames() {
-        return ResponseEntity.status(200).body(gameService.getAllGames());
+    public ResponseEntity<?> getGames(@RequestParam (required = false) String keyword) {
+        if(keyword==null || keyword.trim().isEmpty()) {
+            return ResponseEntity.status(200).body(gameService.getAllGames());
+        } else {
+            return ResponseEntity.status(200).body(gameService.getGameByKeyword(keyword));
+        }
     }
 
     @GetMapping("api/games/{id}")
