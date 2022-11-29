@@ -79,6 +79,13 @@ public class GameServiceImpl implements GameService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Integer deleteGame(Integer id) {
+        Game game = gameRepository.findById(id).orElseThrow(GameNotFoundException::new);
+        gameRepository.deleteById(id);
+        return game.getId();
+    }
+
     private GameDTO convertGameToGameDTO (Game game){
         GameDTO gameDTO = new GameDTO();
         gameDTO.setId(game.getId());

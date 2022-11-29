@@ -45,4 +45,8 @@ public class GameController {
         return ResponseEntity.status(201).body(gameService.changeCategoryById(id, category));
     }
 
+    @DeleteMapping("/api/games/{id}")
+    public ResponseEntity<Integer> deleteGame(@PathVariable Integer id){
+        return ResponseEntity.ok(gameService.deleteGame(id));
+    }
 }

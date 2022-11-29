@@ -18,4 +18,6 @@ public interface GameService {
     GameDTO changeCategoryById(Integer id, CategoryDTO category);
 
     List<GameDTO> getGameByKeyword(String keyword);
+
+    Integer deleteGame(Integer id);
 }
